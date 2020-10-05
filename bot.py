@@ -2,19 +2,20 @@ import config
 import telebot
 import pytaf
 from urllib import request
+from googletrans import Translator
 
 TOKEN = config.TOKEN
 URL_METAR = config.URL_METAR
 URL_TAF = config.URL_TAF
 
 bot = telebot.TeleBot(token=TOKEN)
+translator = Translator()
 keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard.row('/start', '/get_metar', '/get_taf')
 
 def parse_data(code):
     code = code.replace('TAF TAF', 'TAF', 1).split('\n', 1)[1]
-    return pytaf.Decoder(pytaf.TAF(code)).decode_taf()
-
+    return translator.translate(pytaf.Decoder(pytaf.TAF(code)).decode_taf(), src='en', dest='ru')
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
@@ -35,6 +36,5 @@ def get_taf(message):
     code = request.urlopen(URL_TAF).read().decode('utf-8')
     # Send formatted answer.
     bot.send_message(message.chat.id, parse_data(code), reply_markup=keyboard)
-
 
 bot.polling(none_stop=True)
