@@ -16,9 +16,11 @@ keyboard.row('/start', '/get_metar', '/get_taf')
 def parse_data(code):
     # заменяте таф таф на таф один раз, один раз режет строку на \n и берет второй элемент по счету, бо первый это 0
     code = code.replace('TAF TAF', 'TAF', 1).split('\n', 1)[1]
-    # в обьект перевода подается обьект конвертирования кода сводки аэропорта взятый из переменной code
-    return translator.translate(pytaf.Decoder(pytaf.TAF(code)).decode_taf(), src='en', dest='ru')
-
+    # взятый из переменной code  код подается в обьект конвертирования кода сводки аэропорта
+    content = pytaf.Decoder(pytaf.TAF(code)).decode_taf()
+    # в обьект перевода подается погода не английском
+    translation = translator.translate(content, src='en', dest='ru')
+    return translation.text
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
