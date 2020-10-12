@@ -7,6 +7,7 @@ from googletrans import Translator
 
 
 TOKEN = os.getenv('API_BOT_TOKEN')
+
 # Создание бота
 bot = telebot.TeleBot(token=TOKEN)
 # создать объект класса Translator
@@ -34,7 +35,7 @@ def start(message):
 @bot.message_handler(commands=['get_metar'])
 def get_metar(message):
     # Fetch info from server.
-    code = request.urlopen(URL_METAR).read().decode('utf-8')
+    code = request.urlopen(os.getenv('URL_METAR')).read().decode('utf-8')
     # Send formatted answer.
     bot.send_message(message.chat.id, parse_data(code), reply_markup=keyboard)
 
@@ -42,7 +43,7 @@ def get_metar(message):
 @bot.message_handler(commands=['get_taf'])
 def get_taf(message):
     # Fetch info from server.
-    code = request.urlopen(URL_TAF).read().decode('utf-8')
+    code = request.urlopen(os.getenv('URL_TAF')).read().decode('utf-8')
     # Send formatted answer.
     bot.send_message(message.chat.id, parse_data(code), reply_markup=keyboard)
 
