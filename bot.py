@@ -1,10 +1,12 @@
 import telebot
 import pytaf
+import os
+
 from urllib import request
 from googletrans import Translator
-from config import TOKEN, URL_METAR, URL_TAF
+from flask import Flask, request
 
-
+TOKEN = os.getenv('API_BOT_TOKEN')
 # Создание бота
 bot = telebot.TeleBot(token=TOKEN)
 # создать объект класса Translator
@@ -45,6 +47,23 @@ def get_taf(message):
     bot.send_message(message.chat.id, parse_data(code), reply_markup=keyboard)
 
 
+set web hook
+server = Flask(__name__)
+
+
+@server.route('/' + TOKEN, methods=['POST'])
+def get_messages():
+    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode('utf-8'))])
+    return '!', 200
+
+
+@server.route('/')
+def web_hook():
+    bot.remove_webhook()
+    bot.set_webhook(url=os.getenv('HEROKU_URL') + TOKEN)
+    return '!', 200
+
 # Запускаем бота, чтобы работал 24/7
 if __name__ == '__main__':
-    bot.polling(none_stop=True, interval=15, timeout=60)
+    # bot.polling(none_stop=True, interval=15, timeout=60)
+    server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8443)))
