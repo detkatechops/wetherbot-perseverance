@@ -47,7 +47,7 @@ def get_taf(message):
     bot.send_message(message.chat.id, parse_data(code), reply_markup=keyboard)
 
 
-set web hook
+# set web hook
 server = Flask(__name__)
 
 
