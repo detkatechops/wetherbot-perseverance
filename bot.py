@@ -47,4 +47,4 @@ def get_taf(message):
 
 # Запускаем бота, чтобы работал 24/7
 if __name__ == '__main__':
-    bot.polling(none_stop=True, interval=0, timeout=40)
+    bot.polling(none_stop=True, interval=5, timeout=40)
