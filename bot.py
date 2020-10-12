@@ -57,7 +57,7 @@ def get_messages():
     return '!', 200
 
 
-@server.route('/')
+@server.route('/', methods=['GET'])
 def web_hook():
     bot.remove_webhook()
     bot.set_webhook(url=os.getenv('HEROKU_URL') + TOKEN)
